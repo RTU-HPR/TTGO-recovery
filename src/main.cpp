@@ -14,6 +14,10 @@ wifiLoraConfig loraWebConfig = {
 
 void setup()
 {
+  ///< Initialize the config
+  EEPROM.begin(EEPROM_SIZE);
+  loadConfig(&loraWebConfig);
+  
   ///< Initialize the serial port
   Serial.begin(SERIAL_SPEED);
 

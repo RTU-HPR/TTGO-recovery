@@ -9,6 +9,7 @@
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#include <EEPROM.h>
 
 #include "TTGOPins.h"
 #include "teamLogo.h"
@@ -31,5 +32,8 @@
 #define WIFI_SSID "RTU_HPR_RECOVERY" ///< WiFi SSID
 #define WIFI_PASS "ttgorecovery"     ///< WiFi password
 #define WEBSERVER_PORT 80            ///< Webserver port
+
+#define EEPROM_SIZE 512          ///< EEPROM size in bytes
+#define EEPROM_LORA_CONFIG_ADDR 0 ///< EEPROM address for LoRa configuration
 
 #endif // MAIN_H

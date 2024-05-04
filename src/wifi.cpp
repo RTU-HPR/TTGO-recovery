@@ -71,7 +71,9 @@ void setParams(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t
     else
     {
         request->send(404);
+        return;
     }
+    storeConfig(&loraWebConfig);
 }
 
 void initWebServer()
