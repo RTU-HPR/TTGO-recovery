@@ -5,6 +5,7 @@ void updateDisplay(oledData *data);
 
 /// Declarations for the WiFi module
 void initWIFI(char *wifiSSID, char *wifiPassword);
+void handleWiFiStats();
 
 /// Declarations for the persistent configuration storage
 void storeConfig(wifiLoraConfig *config);

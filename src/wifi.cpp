@@ -3,6 +3,7 @@
 
 extern AsyncWebServer server;
 extern wifiLoraConfig loraWebConfig;
+extern oledData screenData;
 
 void returnIndex(AsyncWebServerRequest *request)
 {
@@ -93,6 +94,22 @@ void initWebServer()
         "/bandwidth", HTTP_POST, [](AsyncWebServerRequest *request) {}, NULL, setParams);
     server.on(
         "/codingRate", HTTP_POST, [](AsyncWebServerRequest *request) {}, NULL, setParams);
+}
+
+void handleWiFiStats(){
+    if (WiFi.status() == WL_CONNECTED)
+    {
+        screenData.wifi.connected = 1;
+        screenData.wifi.rssi = WiFi.RSSI();
+        screenData.wifi.ip[0] = WiFi.localIP()[0];
+        screenData.wifi.ip[1] = WiFi.localIP()[1];
+        screenData.wifi.ip[2] = WiFi.localIP()[2];
+        screenData.wifi.ip[3] = WiFi.localIP()[3];
+    }
+    else
+    {
+        screenData.wifi.connected = 0;
+    }
 }
 
 void initWIFI(char *wifiSSID, char *wifiPassword)
