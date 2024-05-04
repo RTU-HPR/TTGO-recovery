@@ -1,13 +1,22 @@
 #include "main.h"
 
-uint64_t oledTick = 0;
+uint64_t oledTick = 0, wifiStatusUpdateTick = 0;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 AsyncWebServer server(WEBSERVER_PORT);
 
-oledData screenData;
+oledData screenData = {
+    .latitude = 0.0,
+    .longitude = 0.0,
+    .altitude = 0,
+    .lastPacket = 0,
+    .pid = 0,
+    .txid = 0,
+    .chcksumErr = 0,
+    .packetRssi = 0,
+};
 wifiLoraConfig loraWebConfig = {
-    .frequency = 868.0,
+    .frequency = 433.0,
     .spreadingFactor = 7,
     .bandwidth = 125,
     .codingRate = 5};
@@ -36,7 +45,13 @@ void loop()
   {
     oledTick = millis();
     digitalWrite(25, !digitalRead(25));
-    //Serial.println("Hello World");
+    // Serial.println("Hello World");
     updateDisplay(&screenData);
+  }
+
+  if (millis() - wifiStatusUpdateTick > WIFI_STATS_UPDATE_PERIOD)
+  {
+    wifiStatusUpdateTick = millis();
+    handleWiFiStats();
   }
 }

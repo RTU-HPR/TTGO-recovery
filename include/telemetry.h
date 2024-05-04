@@ -3,22 +3,27 @@
 
 #include <stdint.h>
 
+struct wifiStatus
+{
+    uint8_t connected;
+    uint8_t ip[4];
+    int8_t rssi;
+};
+
 struct oledData
 {
     float latitude;
     float longitude;
     float altitude;
     float verticalSpeed;
-    float lastPacket;
-
+    uint64_t lastPacket;
     uint64_t pid;
     uint64_t txid;
 
-    uint8_t checksumOk;
-    uint8_t wifiConnected;
-    uint8_t wifiIp[4];
-    uint8_t wifiRssi;
+    uint8_t chcksumErr;
     uint8_t packetRssi;
+
+    wifiStatus wifi;
 };
 
 struct wifiLoraConfig

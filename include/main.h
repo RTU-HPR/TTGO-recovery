@@ -26,10 +26,12 @@
 #define RTU_HPR_SPLASH_TIMEOUT 0                   ///< Enable HPR splash screen
 #define SSD1306_NO_SPLASH                          ///< Dissble AdaFruits Splash logo
 #define DISPLAY_ROW_STEP 10                        ///< Row step for display
-#define WIFI_STATS_CHANGE_PERIOD 2000              ///< WiFi stats update period in ms
+#define WIFI_STATS_CHANGE_PERIOD 3000              ///< WiFi stats update period in ms
 
-#define WIFI_SSID "RTU_HPR_RECOVERY" ///< WiFi SSID
-#define WIFI_PASS "ttgorecovery"     ///< WiFi password
-#define WEBSERVER_PORT 80            ///< Webserver port
+#define WIFI_SSID "RTU_HPR_RECOVERY"                              ///< WiFi SSID
+#define WIFI_PASS "ttgorecovery"                                  ///< WiFi password
+#define WEBSERVER_PORT 80                                         ///< Webserver port
+#define WIFI_STATS_UPDATE_FREQ 100                                ///< WiFi stats update frequency in mHz
+#define WIFI_STATS_UPDATE_PERIOD 1000000 / WIFI_STATS_UPDATE_FREQ ///< WiFi stats update period in ms
 
 #endif // MAIN_H

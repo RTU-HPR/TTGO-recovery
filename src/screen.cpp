@@ -44,7 +44,23 @@ void updateDisplay(oledData *data)
         display.setCursor(0, DISPLAY_ROW_STEP * 2);
         display.println(buffer);
 
-        sprintf(buffer, "LST:%.1fs", data->lastPacket);
+        float dt = (millis() - data->lastPacket) / 1000.0;
+        if (dt < 60.0)
+        {
+            sprintf(buffer, "LST:%.1fs", dt);
+        }
+        else if (dt < 59999.0) /// 999 * 60 + 59
+        {   
+            uint8_t minutes = dt / 60.0;
+            uint8_t seconds = fmod(dt, 60.0);
+            if (seconds < 10)
+                sprintf(buffer, "LST:%u:0%u", minutes, seconds);
+            else
+                sprintf(buffer, "LST:%u:%u", minutes, seconds);
+        }
+        else {
+            sprintf(buffer, "LST:Long");
+        }
         display.setCursor(66, DISPLAY_ROW_STEP * 2);
         display.println(buffer);
 
@@ -60,26 +76,52 @@ void updateDisplay(oledData *data)
         display.setCursor(0, DISPLAY_ROW_STEP * 4);
         display.println(buffer);
 
-        if (data->checksumOk)
-            sprintf(buffer, "CHCKSUM:OK");
-        else
+        if (data->chcksumErr)
             sprintf(buffer, "CHCKSUM:ERR");
-        display.setCursor(54, DISPLAY_ROW_STEP * 4);
+        else
+            sprintf(buffer, "CHCKSUM:OK");
+        display.setCursor(60, DISPLAY_ROW_STEP * 4);
         display.println(buffer);
 
         display.drawLine(0, 50, 128, 50, WHITE);
 
-        if (data->wifiConnected)
+        if (data->wifi.connected)
         {
-            if(millis() - wifiStatsTick > WIFI_STATS_CHANGE_PERIOD)
+            if (millis() - wifiStatsTick > WIFI_STATS_CHANGE_PERIOD)
             {
                 wifiStatsTick = millis();
                 wifiStats = ~wifiStats & 0x01;
-            }   
+            }
+            if (wifiStats)
+            {
+                sprintf(buffer, "IP:%u.%u.%u.%u", data->wifi.ip[0], data->wifi.ip[1], data->wifi.ip[2], data->wifi.ip[3]);
+            }
+            else
+            {
+                sprintf(buffer, "WIFI RSSI:%d", data->wifi.rssi);
+            }
         }
         else
         {
-            sprintf(buffer, "WIFI:DISCONNECTED");
+            if (millis() - wifiStatsTick > WIFI_STATS_CHANGE_PERIOD)
+            {
+                wifiStatsTick = millis();
+                wifiStats += 1;
+                if (wifiStats > 2)
+                    wifiStats = 0;
+            }
+            if (wifiStats == 1)
+            {
+                sprintf(buffer, "SSID:%s", WIFI_SSID);
+            }
+            else if (wifiStats == 2)
+            {
+                sprintf(buffer, "PASS:%s", WIFI_PASS);
+            }
+            else
+            {
+                sprintf(buffer, "TURN ON WIFI HOTSPOT!");
+            }
         }
         display.setCursor(0, 54);
         display.println(buffer);
