@@ -121,7 +121,7 @@
                     sendPostRequest('/frequency', document.getElementById('frequency').value),
                     sendPostRequest('/spreadingFactor', document.getElementById('spreadingFactor').value),
                     sendPostRequest('/bandwidth', document.getElementById('bandwidth').value),
-                    sendPostRequest('/codingRate', document.getElementById('codingRate').value)
+                    sendPostRequest('/codingRate', document.getElementById('codingRate').value.slice(-1)) // Extract the last digit
                 ]).then(function () {
                     // All fetch requests have completed
                     // You can now do something else

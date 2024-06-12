@@ -1,9 +1,7 @@
 #include "main.h"
 #include "webpage.h"
-
-extern AsyncWebServer server;
-extern wifiLoraConfig loraWebConfig;
-extern oledData screenData;
+AsyncWebServer server(WEBSERVER_PORT);
+extern Config config;
 
 void returnIndex(AsyncWebServerRequest *request)
 {
@@ -15,22 +13,22 @@ void returnParams(AsyncWebServerRequest *request)
     char buffer[128];
     if (request->url() == "/frequency")
     {
-        sprintf(buffer, "%.3f", loraWebConfig.frequency);
+        sprintf(buffer, "%.3f", config.frequency());
         request->send(200, "text/plain", buffer);
     }
     else if (request->url() == "/spreadingFactor")
     {
-        sprintf(buffer, "%d", loraWebConfig.spreadingFactor);
+        sprintf(buffer, "%d", config.spreadingFactor());
         request->send(200, "text/plain", buffer);
     }
     else if (request->url() == "/bandwidth")
     {
-        sprintf(buffer, "%d", loraWebConfig.bandwidth);
+        sprintf(buffer, "%d", config.bandwidth());
         request->send(200, "text/plain", buffer);
     }
     else if (request->url() == "/codingRate")
     {
-        sprintf(buffer, "4/%d", loraWebConfig.codingRate);
+        sprintf(buffer, "4/%d", config.codingRate());
         request->send(200, "text/plain", buffer);
     }
     else
@@ -45,28 +43,28 @@ void setParams(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t
     char dataBuffer[len + 1];
     for (int i = 0; i < len; i++)
     {
-        dataBuffer[i] = (char)data[i];
+        dataBuffer[i] = static_cast<char>(data[i]);
     }
     dataBuffer[len] = '\0';
 
     if (request->url() == "/frequency")
     {
-        loraWebConfig.frequency = atoff((const char *)dataBuffer);
+        config.frequency(atoff((const char *)dataBuffer));
         request->send(200);
     }
     else if (request->url() == "/spreadingFactor")
     {
-        loraWebConfig.spreadingFactor = atoi((const char *)dataBuffer);
+        config.spreadingFactor(atoi((const char *)dataBuffer));
         request->send(200);
     }
     else if (request->url() == "/bandwidth")
     {
-        loraWebConfig.bandwidth = atoi((const char *)dataBuffer);
+        config.bandwidth(atoi((const char *)dataBuffer));
         request->send(200);
     }
     else if (request->url() == "/codingRate")
     {
-        sscanf((const char *)dataBuffer, "4/%d", &loraWebConfig.codingRate);
+        config.codingRate(atoi((const char *)dataBuffer));
         request->send(200);
     }
     else
@@ -74,7 +72,6 @@ void setParams(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t
         request->send(404);
         return;
     }
-    storeConfig(&loraWebConfig);
 }
 
 void initWebServer()
@@ -96,27 +93,11 @@ void initWebServer()
         "/codingRate", HTTP_POST, [](AsyncWebServerRequest *request) {}, NULL, setParams);
 }
 
-void handleWiFiStats(){
-    if (WiFi.status() == WL_CONNECTED)
-    {
-        screenData.wifi.connected = 1;
-        screenData.wifi.rssi = WiFi.RSSI();
-        screenData.wifi.ip[0] = WiFi.localIP()[0];
-        screenData.wifi.ip[1] = WiFi.localIP()[1];
-        screenData.wifi.ip[2] = WiFi.localIP()[2];
-        screenData.wifi.ip[3] = WiFi.localIP()[3];
-    }
-    else
-    {
-        screenData.wifi.connected = 0;
-    }
-}
-
 void initWIFI(char *wifiSSID, char *wifiPassword)
 {
     WiFi.mode(WIFI_STA);
     WiFi.begin(wifiSSID, wifiPassword);
-    WiFi.setHostname("TTGO-Recovery");
+    WiFi.setHostname(WIFI_HOSTNAME);
     server.begin();
     initWebServer();
 }

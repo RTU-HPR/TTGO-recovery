@@ -125,7 +125,7 @@ const char* webPage =
 "                    sendPostRequest('/frequency', document.getElementById('frequency').value),\n"
 "                    sendPostRequest('/spreadingFactor', document.getElementById('spreadingFactor').value),\n"
 "                    sendPostRequest('/bandwidth', document.getElementById('bandwidth').value),\n"
-"                    sendPostRequest('/codingRate', document.getElementById('codingRate').value)\n"
+"                    sendPostRequest('/codingRate', document.getElementById('codingRate').value.slice(-1)) // Extract the last digit\n"
 "                ]).then(function () {\n"
 "                    // All fetch requests have completed\n"
 "                    // You can now do something else\n"
