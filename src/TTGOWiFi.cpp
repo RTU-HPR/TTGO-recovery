@@ -1,5 +1,4 @@
-#include "main.h"
-#include "webpage.h"
+#include "TTGOWiFi.h"
 AsyncWebServer server(WEBSERVER_PORT);
 extern Config config;
 
@@ -23,7 +22,7 @@ void returnParams(AsyncWebServerRequest *request)
     }
     else if (request->url() == "/bandwidth")
     {
-        sprintf(buffer, "%d", config.bandwidth());
+        sprintf(buffer, "%.2f", config.bandwidth());
         request->send(200, "text/plain", buffer);
     }
     else if (request->url() == "/codingRate")
@@ -49,22 +48,22 @@ void setParams(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t
 
     if (request->url() == "/frequency")
     {
-        config.frequency(atoff((const char *)dataBuffer));
+        config.frequency(static_cast<float>(atoff((const char *)dataBuffer)));
         request->send(200);
     }
     else if (request->url() == "/spreadingFactor")
     {
-        config.spreadingFactor(atoi((const char *)dataBuffer));
+        config.spreadingFactor(static_cast<float>(atoff((const char *)dataBuffer)));
         request->send(200);
     }
     else if (request->url() == "/bandwidth")
     {
-        config.bandwidth(atoi((const char *)dataBuffer));
+        config.bandwidth(static_cast<float>(atoff((const char *)dataBuffer)));
         request->send(200);
     }
     else if (request->url() == "/codingRate")
     {
-        config.codingRate(atoi((const char *)dataBuffer));
+        config.codingRate(static_cast<float>(atoff((const char *)dataBuffer)));
         request->send(200);
     }
     else

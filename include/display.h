@@ -1,6 +1,7 @@
 #pragma once
-#include "main.h"
+#include "config.h"
 #include "teamLogo.h"
+#include "radio.h"
 
 enum DISPLAY_WIFI_CONNECTED_STATES
 {
@@ -28,7 +29,7 @@ struct displayData
     float longitude;
     float altitude;
     float verticalSpeed;
-    uint64_t lastPacket;
+    uint64_t lastPacketTime;
     uint64_t pid;
     uint64_t txid;
 
@@ -61,4 +62,5 @@ public:
     ~Display();
     void begin();
     void update();
+    void update(RadioPacket::TelemetryData data);
 };

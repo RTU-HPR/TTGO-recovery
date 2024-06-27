@@ -2,21 +2,21 @@
 #define TTGOPINS_H
 
 
-#define OLED_SDA 21
-#define OLED_SCL 22
+#define TTGO_OLED_SDA 21
+#define TTGO_OLED_SCL 22
 
-#define SDCARD_CS 13
-#define SDCARD_MOSI 15
-#define SDCARD_MISO 2
-#define SDCARD_SCLK 14
+#define TTGO_SDCARD_CS 13
+#define TTGO_SDCARD_MOSI 15
+#define TTGO_SDCARD_MISO 2
+#define TTGO_SDCARD_SCLK 14
 
-#define LORA_MOSI 27
-#define LORA_MISO 19
-#define LORA_SCLK 5
-#define LORA_CS 18
-#define LORA_RST 23
-#define LORA_DIO0 26
+#define TTGO_LORA_MOSI 27
+#define TTGO_LORA_MISO 19
+#define TTGO_LORA_SCLK 5
+#define TTGO_LORA_CS 18
+#define TTGO_LORA_RST 23
+#define TTGO_LORA_DIO0 26
 
-#define LED_PIN 25
+#define TTGO_LED_PIN 25
 
 #endif // "TTGOPINS_H"

@@ -145,7 +145,7 @@ void Display::_updateDisplay()
     _hwDisplay.setCursor(0, DISPLAY_ROW_STEP * 2);
     _hwDisplay.println(buffer);
 
-    _converTime(_data.lastPacket, buffer);
+    _converTime(_data.lastPacketTime, buffer);
     _hwDisplay.setCursor(66, DISPLAY_ROW_STEP * 2);
     _hwDisplay.println(buffer);
 
@@ -184,4 +184,13 @@ void Display::update()
         _lastUpdate = millis();
         _updateDisplay();
     }
+}
+
+void Display::update(RadioPacket::TelemetryData data)
+{
+    _data.latitude = data.latitude;
+    _data.longitude = data.longitude;
+    _data.altitude = data.baroAltitude;
+    _data.pid = data.pid;
+    _data.txid = data.txid;
 }

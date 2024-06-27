@@ -1,20 +1,24 @@
-#include "config.h"
+#include "systemConfig.h"
 
 Config::Config(Radio *radio, SPIClass *spi) : _radio(radio), _spi(spi)
 {
-    EEPROM.begin(EEPROM_SIZE);
-    _load();
-    // Set default values if not set
-    _radioConfig.cs = LORA_CS;
-    _radioConfig.dio0 = LORA_DIO0;
-    _radioConfig.reset = LORA_RST;
-    _radioConfig.spi_bus = _spi;
-    _store();
-    Serial.println("Config loaded");
 }
 
 Config::~Config()
 {
+}
+
+void Config::begin()
+{
+    EEPROM.begin(EEPROM_SIZE);
+    _load();
+    _radioConfig.cs = TTGO_LORA_CS;
+    _radioConfig.dio0 = TTGO_LORA_DIO0;
+    _radioConfig.reset = TTGO_LORA_RST;
+    _radioConfig.tx_power = LORA_TX_POWER;
+    _radioConfig.spi_bus = _spi;
+    _store();
+    Serial.println("Config loaded");
 }
 
 void Config::_store()
@@ -60,12 +64,12 @@ bool Config::spreadingFactor(uint8_t spreading)
     return false;
 }
 
-uint16_t Config::bandwidth()
+float Config::bandwidth()
 {
     return _radioConfig.signal_bw;
 }
 
-bool Config::bandwidth(uint16_t bandwidth)
+bool Config::bandwidth(float bandwidth)
 {
     _radioConfig.signal_bw = bandwidth;
     if (_radio->reconfigure(_radioConfig))
