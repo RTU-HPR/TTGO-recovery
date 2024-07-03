@@ -9,4 +9,6 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <EEPROM.h>
+#include <SPI.h>
+#include <SD.h>
 #include <FS.h>

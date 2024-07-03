@@ -64,57 +64,75 @@ void Display::_getWifiStatus()
     }
 }
 
-void Display::_convertWifiStatus(char *buffer)
+void Display::_updateFooter(char *buffer)
 {
     _getWifiStatus();
     if (_data.wifi.connected)
     {
-        if (_data.displayWifiConnectedState == IP)
+        if (_data.footerWifiConnected == FOOTER_WIFI_CONNECTED::IP)
         {
             sprintf(buffer, "IP:%u.%u.%u.%u", _data.wifi.ip[0], _data.wifi.ip[1], _data.wifi.ip[2], _data.wifi.ip[3]);
             if (millis() - _lastWifiUpdate > WIFI_STATS_CHANGE_PERIOD)
             {
                 _lastWifiUpdate = millis();
-                _data.displayWifiConnectedState = RSSI;
+                _data.footerWifiConnected = FOOTER_WIFI_CONNECTED::RSSI;
             }
         }
-        else
+        else if (_data.footerWifiConnected == FOOTER_WIFI_CONNECTED::RSSI)
         {
             sprintf(buffer, "WIFI RSSI:%d", _data.wifi.rssi);
             if (millis() - _lastWifiUpdate > WIFI_STATS_CHANGE_PERIOD)
             {
                 _lastWifiUpdate = millis();
-                _data.displayWifiConnectedState = IP;
+                _data.footerWifiConnected = FOOTER_WIFI_CONNECTED::SD_STATUS;
+            }
+        }
+        else
+        {
+            sprintf(buffer, "SD CARD:%s", _data.sdStatus == Logger::SD_STATUS::SD_MOUNTED ? "OK" : "NOT PRESENT");
+            if (millis() - _lastWifiUpdate > WIFI_STATS_CHANGE_PERIOD)
+            {
+                _lastWifiUpdate = millis();
+                _data.footerWifiConnected = FOOTER_WIFI_CONNECTED::IP;
             }
         }
     }
     else
     {
-        if (_data.displayWifiDisconnectedState == SSID)
+        if (_data.footerWifiDisconnected == FOOTER_WIFI_DISCONNECTED::SSID)
         {
             sprintf(buffer, "SSID:%s", WIFI_SSID);
             if (millis() - _lastWifiUpdate > WIFI_STATS_CHANGE_PERIOD)
             {
                 _lastWifiUpdate = millis();
-                _data.displayWifiDisconnectedState = PASSWORD;
+                _data.footerWifiDisconnected = FOOTER_WIFI_DISCONNECTED::PASSWORD;
             }
         }
-        else if (_data.displayWifiDisconnectedState == PASSWORD)
+        else if (_data.footerWifiDisconnected == FOOTER_WIFI_DISCONNECTED::PASSWORD)
         {
             sprintf(buffer, "PASS:%s", WIFI_PASS);
             if (millis() - _lastWifiUpdate > WIFI_STATS_CHANGE_PERIOD)
             {
                 _lastWifiUpdate = millis();
-                _data.displayWifiDisconnectedState = MESSAGE;
+                _data.footerWifiDisconnected = FOOTER_WIFI_DISCONNECTED::MESSAGE;
             }
         }
-        else
+        else if (_data.footerWifiDisconnected == FOOTER_WIFI_DISCONNECTED::MESSAGE)
         {
             sprintf(buffer, "TURN ON WIFI HOTSPOT!");
             if (millis() - _lastWifiUpdate > WIFI_STATS_CHANGE_PERIOD)
             {
                 _lastWifiUpdate = millis();
-                _data.displayWifiDisconnectedState = SSID;
+                _data.footerWifiDisconnected = FOOTER_WIFI_DISCONNECTED::SD_STATUS;
+            }
+        }
+        else
+        {
+            sprintf(buffer, "SD CARD:%s", _data.sdStatus == Logger::SD_STATUS::SD_MOUNTED ? "OK" : "NOT PRESENT");
+            if (millis() - _lastWifiUpdate > WIFI_STATS_CHANGE_PERIOD)
+            {
+                _lastWifiUpdate = millis();
+                _data.footerWifiDisconnected = FOOTER_WIFI_DISCONNECTED::SSID;
             }
         }
     }
@@ -170,19 +188,20 @@ void Display::_updateDisplay()
 
     _hwDisplay.drawLine(0, 50, 128, 50, WHITE);
 
-    _convertWifiStatus(buffer);
+    _updateFooter(buffer);
     _hwDisplay.setCursor(0, 54);
     _hwDisplay.println(buffer);
 
     _hwDisplay.display();
 }
 
-void Display::update()
+void Display::update(Logger::SD_STATUS status)
 {
     if (millis() - _lastUpdate > OLED_UPDATE_PERIOD)
     {
         _lastUpdate = millis();
         _updateDisplay();
+        _data.sdStatus = status;
     }
 }
 

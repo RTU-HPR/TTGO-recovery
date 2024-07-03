@@ -1,5 +1,7 @@
 #pragma once
 #include "config.h"
+#include "teamLogo.h"
+#include "logger.h"
 
 const String LOCATION_FORMAT[] = {"float", "float", "uint16", "uint16", "uint8"};
 #define LOCATION_PACKET_DATA_COUNT 5

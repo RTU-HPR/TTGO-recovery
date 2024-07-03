@@ -4,6 +4,8 @@ Config config(&radio, &SPI);
 Display display;
 RadioPacket incomingPacket;
 WiFiClient espClient;
+SPIClass SPI2(HSPI);
+Logger logger(SPI2);
 void setup()
 {
   ///< Initialize the serial port
@@ -26,14 +28,18 @@ void setup()
   radio.begin(config.radioConfig());
 
   display.begin();
-}
 
+  SPI2.begin(TTGO_SDCARD_SCLK, TTGO_SDCARD_MISO, TTGO_SDCARD_MOSI, TTGO_SDCARD_CS);
+  logger.begin();
+}
+uint64_t amogus = 0;
 void loop()
 {
-  display.update();
+  display.update(logger.status());
   if (radio.receive_bytes())
   {
     incomingPacket.received(radio.received_data.bytes, radio.received_data.length);
     display.update(incomingPacket.lastPacket());
   }
+  logger.loop();
 }

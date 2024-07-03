@@ -1,19 +1,19 @@
 #pragma once
-#include "config.h"
-#include "teamLogo.h"
 #include "radio.h"
 
-enum DISPLAY_WIFI_CONNECTED_STATES
+enum class FOOTER_WIFI_CONNECTED
 {
     IP,
     RSSI,
+    SD_STATUS,
 };
 
-enum DISPLAY_WIFI_DISCONNECTED_STATES
+enum class FOOTER_WIFI_DISCONNECTED
 {
     SSID,
     PASSWORD,
     MESSAGE,
+    SD_STATUS,
 };
 
 struct wifiStatus
@@ -38,8 +38,10 @@ struct displayData
 
     wifiStatus wifi;
 
-    DISPLAY_WIFI_CONNECTED_STATES displayWifiConnectedState;
-    DISPLAY_WIFI_DISCONNECTED_STATES displayWifiDisconnectedState;
+    FOOTER_WIFI_CONNECTED footerWifiConnected;
+    FOOTER_WIFI_DISCONNECTED footerWifiDisconnected;
+
+    Logger::SD_STATUS sdStatus;
 };
 
 class Display
@@ -54,13 +56,13 @@ private:
     void _updateDisplay();
     void _converTime(uint64_t time, char *buffer);
     void _getWifiStatus();
-    void _convertWifiStatus(char *buffer);
+    void _updateFooter(char *buffer);
     displayData _data;
 
 public:
     Display(/* args */);
     ~Display();
     void begin();
-    void update();
+    void update(Logger::SD_STATUS status);
     void update(RadioPacket::TelemetryData data);
 };
