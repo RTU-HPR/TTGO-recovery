@@ -1,8 +1,4 @@
 #include "radio.h"
-#include "MUFFINS_CCSDS_Packets.h"
-#include "MUFFINS_Checksums.h"
-
-
 
 RadioPacket::RadioPacket(/* args */)
 {

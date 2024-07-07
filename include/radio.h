@@ -1,7 +1,12 @@
 #pragma once
+
+// ======================== Library Includes ========================
+#include <Arduino.h>
 #include "config.h"
 #include "teamLogo.h"
 #include "logger.h"
+#include "MUFFINS_CCSDS_Packets.h"
+#include "MUFFINS_Checksums.h"
 
 const String LOCATION_FORMAT[] = {"float", "float", "uint16", "uint16", "uint8"};
 #define LOCATION_PACKET_DATA_COUNT 5

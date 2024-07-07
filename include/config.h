@@ -1,8 +1,4 @@
 #pragma once
-
-#include "libs.h"
-#include "TTGOPins.h"
-
 // ======================== Constants ========================
 #define VERSION "0.1pre" ///< Firmware version
 #define COMPILE_DATE __DATE__ __TIME__ ///< Compilation date
@@ -29,5 +25,4 @@
 #define EEPROM_SIZE 512          ///< EEPROM size in bytes
 #define EEPROM_LORA_CONFIG_ADDR 0 ///< EEPROM address for LoRa configuration
 
-// ======================== Function declarations ========================
-void initWIFI(char *wifiSSID, char *wifiPassword);
+#include "TTGOPins.h"

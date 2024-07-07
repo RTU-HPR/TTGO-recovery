@@ -1,5 +1,11 @@
 #pragma once
+
+// ======================== Library Includes ========================
+#include <Arduino.h>
+#include <EEPROM.h>
+#include <MUFFINS_Radio.h>
 #include "config.h"
+
 
 class Config
 {
