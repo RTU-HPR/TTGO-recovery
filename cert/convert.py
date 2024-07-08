@@ -1,6 +1,12 @@
 import os
 
-def html_to_c_string(file_path, output_file):
+def get_cert(file_path):
+    os.system(f"curl -o {file_path} https://letsencrypt.org/certs/isrgrootx1.pem")
+
+def del_file(file_path):
+    os.remove(file_path)
+
+def convert_cert(file_path, output_file):
     # Delete the output file if it exists
     if os.path.exists(output_file):
         os.remove(output_file)
@@ -23,11 +29,12 @@ def html_to_c_string(file_path, output_file):
 
     # Write to .h file
     with open(output_file, 'w') as file:
-        file.write("#ifndef _WEBPAGE_H\n")
-        file.write("#define _WEBPAGE_H\n")
+        file.write("#pragma once\n")
         file.write("#include <Arduino.h>\n")
-        file.write(f"const PROGMEM char* webPage = \n{c_string};\n")
-        file.write("#endif // _WEBPAGE_H\n")
+        file.write(f"const PROGMEM char* MQTT_ROOT_CERTIFICATE = \n{c_string};\n")
 
 # Usage
-html_to_c_string("web/index.html", "include/webpage.h")
+del_file("include/cert.h")
+get_cert("cert/root.pem")
+convert_cert("cert/root.pem", "include/cert.h")
+del_file("cert/root.pem")

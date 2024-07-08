@@ -72,7 +72,7 @@ void Display::_updateFooter(char *buffer)
         if (_data.footerWifiConnected == FOOTER_WIFI_CONNECTED::IP)
         {
             sprintf(buffer, "IP:%u.%u.%u.%u", _data.wifi.ip[0], _data.wifi.ip[1], _data.wifi.ip[2], _data.wifi.ip[3]);
-            if (millis() - _lastWifiUpdate > WIFI_STATS_CHANGE_PERIOD)
+            if (millis() - _lastWifiUpdate > FOOTER_STATS_CHANGE_PERIOD)
             {
                 _lastWifiUpdate = millis();
                 _data.footerWifiConnected = FOOTER_WIFI_CONNECTED::RSSI;
@@ -81,7 +81,7 @@ void Display::_updateFooter(char *buffer)
         else if (_data.footerWifiConnected == FOOTER_WIFI_CONNECTED::RSSI)
         {
             sprintf(buffer, "WIFI RSSI:%d", _data.wifi.rssi);
-            if (millis() - _lastWifiUpdate > WIFI_STATS_CHANGE_PERIOD)
+            if (millis() - _lastWifiUpdate > FOOTER_STATS_CHANGE_PERIOD)
             {
                 _lastWifiUpdate = millis();
                 _data.footerWifiConnected = FOOTER_WIFI_CONNECTED::SD_STATUS;
@@ -90,7 +90,7 @@ void Display::_updateFooter(char *buffer)
         else
         {
             sprintf(buffer, "SD CARD:%s", _data.sdStatus == Logger::SD_STATUS::SD_MOUNTED ? "OK" : "NOT PRESENT");
-            if (millis() - _lastWifiUpdate > WIFI_STATS_CHANGE_PERIOD)
+            if (millis() - _lastWifiUpdate > FOOTER_STATS_CHANGE_PERIOD)
             {
                 _lastWifiUpdate = millis();
                 _data.footerWifiConnected = FOOTER_WIFI_CONNECTED::IP;
@@ -102,7 +102,7 @@ void Display::_updateFooter(char *buffer)
         if (_data.footerWifiDisconnected == FOOTER_WIFI_DISCONNECTED::SSID)
         {
             sprintf(buffer, "SSID:%s", WIFI_SSID);
-            if (millis() - _lastWifiUpdate > WIFI_STATS_CHANGE_PERIOD)
+            if (millis() - _lastWifiUpdate > FOOTER_STATS_CHANGE_PERIOD)
             {
                 _lastWifiUpdate = millis();
                 _data.footerWifiDisconnected = FOOTER_WIFI_DISCONNECTED::PASSWORD;
@@ -111,7 +111,7 @@ void Display::_updateFooter(char *buffer)
         else if (_data.footerWifiDisconnected == FOOTER_WIFI_DISCONNECTED::PASSWORD)
         {
             sprintf(buffer, "PASS:%s", WIFI_PASS);
-            if (millis() - _lastWifiUpdate > WIFI_STATS_CHANGE_PERIOD)
+            if (millis() - _lastWifiUpdate > FOOTER_STATS_CHANGE_PERIOD)
             {
                 _lastWifiUpdate = millis();
                 _data.footerWifiDisconnected = FOOTER_WIFI_DISCONNECTED::MESSAGE;
@@ -120,7 +120,7 @@ void Display::_updateFooter(char *buffer)
         else if (_data.footerWifiDisconnected == FOOTER_WIFI_DISCONNECTED::MESSAGE)
         {
             sprintf(buffer, "TURN ON WIFI HOTSPOT!");
-            if (millis() - _lastWifiUpdate > WIFI_STATS_CHANGE_PERIOD)
+            if (millis() - _lastWifiUpdate > FOOTER_STATS_CHANGE_PERIOD)
             {
                 _lastWifiUpdate = millis();
                 _data.footerWifiDisconnected = FOOTER_WIFI_DISCONNECTED::SD_STATUS;
@@ -129,7 +129,7 @@ void Display::_updateFooter(char *buffer)
         else
         {
             sprintf(buffer, "SD CARD:%s", _data.sdStatus == Logger::SD_STATUS::SD_MOUNTED ? "OK" : "NOT PRESENT");
-            if (millis() - _lastWifiUpdate > WIFI_STATS_CHANGE_PERIOD)
+            if (millis() - _lastWifiUpdate > FOOTER_STATS_CHANGE_PERIOD)
             {
                 _lastWifiUpdate = millis();
                 _data.footerWifiDisconnected = FOOTER_WIFI_DISCONNECTED::SSID;

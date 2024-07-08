@@ -7,8 +7,6 @@
 #include <FS.h>
 #include "config.h"
 
-
-#define LOGGER_REMOUNT_PERIOD 5000
 #define DEFAULT_LOG_FILE "/TTGO_LOG_%d.txt"
 #define HEADER_FW VERSION "; Compiled on: " COMPILE_DATE
 #define HEADER_FORMATING "TTGO Recovery | Firmware: %s | Time ON: %lums\n"

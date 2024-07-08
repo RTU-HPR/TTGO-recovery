@@ -1,11 +1,13 @@
 #include "main.h"
+
 Radio radio;
 Config config(&radio, &SPI);
 Display display;
-WiFiClient espClient;
 SPIClass SPI2(HSPI);
 Logger logger(SPI2);
 RadioPacket incomingPacket(&logger);
+MqttClient mqttClient;
+
 void setup()
 {
   ///< Initialize the serial port
@@ -31,8 +33,10 @@ void setup()
 
   SPI2.begin(TTGO_SDCARD_SCLK, TTGO_SDCARD_MISO, TTGO_SDCARD_MOSI, TTGO_SDCARD_CS);
   logger.begin();
+
+  mqttClient.begin();
 }
-uint64_t amogus = 0;
+
 void loop()
 {
   display.update(logger.status());
@@ -42,4 +46,5 @@ void loop()
     display.update(incomingPacket.lastPacket());
   }
   logger.loop();
+  mqttClient.loop();
 }

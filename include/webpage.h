@@ -1,7 +1,7 @@
 #ifndef _WEBPAGE_H
 #define _WEBPAGE_H
 #include <Arduino.h>
-const char* webPage = 
+const PROGMEM char* webPage = 
 "<!DOCTYPE html>\n"
 "<html>\n"
 "  <head>\n"

@@ -8,6 +8,7 @@
 #include "systemConfig.h"
 #include "display.h"
 #include "logger.h"
+#include "mqtt.h"
 
 // ======================== Function declarations ========================
 void initWIFI(char *wifiSSID, char *wifiPassword);

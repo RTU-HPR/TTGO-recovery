@@ -7,6 +7,12 @@
 #include <WiFi.h>
 #include "radio.h"
 
+#define SCREEN_WIDTH 128  ///< OLED display width, in pixels
+#define SCREEN_HEIGHT 64  ///< OLED display height, in pixels
+#define SSD1306_NO_SPLASH ///< Dissble AdaFruits Splash logo
+#define OLED_UPDATE_PERIOD 1000 / OLED_UPDATE_FREQ ///< Update period in ms
+#define DISPLAY_ROW_STEP 10             ///< Row step for display
+
 enum class FOOTER_WIFI_CONNECTED
 {
     IP,

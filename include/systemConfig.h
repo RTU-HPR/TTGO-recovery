@@ -6,6 +6,8 @@
 #include <MUFFINS_Radio.h>
 #include "config.h"
 
+#define EEPROM_SIZE 512           ///< EEPROM size in bytes
+#define EEPROM_LORA_CONFIG_ADDR 0 ///< EEPROM address for LoRa configuration
 
 class Config
 {

@@ -1,7 +1,6 @@
 #ifndef TTGOPINS_H
 #define TTGOPINS_H
 
-
 #define TTGO_OLED_SDA 21
 #define TTGO_OLED_SCL 22
 
