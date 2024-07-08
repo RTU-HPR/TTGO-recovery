@@ -1,6 +1,6 @@
 #include "radio.h"
 
-RadioPacket::RadioPacket(/* args */)
+RadioPacket::RadioPacket(Logger *logger) : _logger(logger)
 {
 }
 
@@ -22,6 +22,7 @@ RadioPacket::PacketStatus RadioPacket::received(uint8_t *data, uint8_t len)
 
     _lastPacket.pid = sequenceCount;
     _lastPacket.txid = apid;
+    _lastPacket.epochTime = epochTime;
 
     ///< Parse the data
     uint8_t *dataBuffer = new uint8_t[dataLength];
@@ -43,4 +44,10 @@ RadioPacket::PacketStatus RadioPacket::received(uint8_t *data, uint8_t len)
 RadioPacket::TelemetryData RadioPacket::lastPacket()
 {
     return _lastPacket;
+}
+
+Logger::LOG_STATUS RadioPacket::_log(TelemetryData *data)
+{
+    return _logger->log((char *)"Time on: %lu Epoch: %lu Latitude: %f Longitude: %f Baro Altitude: %d GPS Altitude: %d Satellites: %d PID: %d TXID: %d\n",
+                        millis(), data->epochTime, data->latitude, data->longitude, data->baroAltitude, data->GPSAltitude, data->satellites, data->pid, data->txid);
 }

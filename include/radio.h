@@ -30,14 +30,18 @@ public:
         uint8_t satellites;
         uint32_t pid;
         uint16_t txid;
+        uint64_t epochTime;
     };
 
 private:
     /* data */
     TelemetryData _lastPacket;
+    Logger *_logger;
+
+    Logger::LOG_STATUS _log(TelemetryData *data);
 
 public:
-    RadioPacket(/* args */);
+    RadioPacket(Logger *logger);
     ~RadioPacket();
 
     PacketStatus received(uint8_t *data, uint8_t len);

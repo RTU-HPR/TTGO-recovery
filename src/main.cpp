@@ -2,10 +2,10 @@
 Radio radio;
 Config config(&radio, &SPI);
 Display display;
-RadioPacket incomingPacket;
 WiFiClient espClient;
 SPIClass SPI2(HSPI);
 Logger logger(SPI2);
+RadioPacket incomingPacket(&logger);
 void setup()
 {
   ///< Initialize the serial port
