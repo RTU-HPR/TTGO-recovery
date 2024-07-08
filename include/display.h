@@ -6,6 +6,7 @@
 #include <Adafruit_SSD1306.h>
 #include <WiFi.h>
 #include "radio.h"
+#include "mqtt.h"
 
 #define SCREEN_WIDTH 128  ///< OLED display width, in pixels
 #define SCREEN_HEIGHT 64  ///< OLED display height, in pixels
@@ -17,6 +18,7 @@ enum class FOOTER_WIFI_CONNECTED
 {
     IP,
     RSSI,
+    MQTT_STATUS,
     SD_STATUS,
 };
 
@@ -54,6 +56,7 @@ struct displayData
     FOOTER_WIFI_DISCONNECTED footerWifiDisconnected;
 
     Logger::SD_STATUS sdStatus;
+    MqttClient::MQTT_STATUS mqttStatus;
 };
 
 class Display
@@ -75,6 +78,6 @@ public:
     Display(/* args */);
     ~Display();
     void begin();
-    void update(Logger::SD_STATUS status);
+    void update(Logger::SD_STATUS status, MqttClient::MQTT_STATUS mqttStatus);
     void update(RadioPacket::TelemetryData data);
 };

@@ -23,7 +23,7 @@
 #define WEBSERVER_PORT 80                        ///< Webserver port
 
 // ======================== SD Card Logger Configuration ========================
-#define LOGGER_REMOUNT_PERIOD 5000 ///< SD card remount period in ms
+#define LOGGER_REMOUNT_PERIOD 30000 ///< SD card remount period in ms
 
 // ======================== MQTT Configuration ========================
 // #define MQTT_SERVER                                                  ///< MQTT server address

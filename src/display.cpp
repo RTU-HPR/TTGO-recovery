@@ -84,6 +84,15 @@ void Display::_updateFooter(char *buffer)
             if (millis() - _lastWifiUpdate > FOOTER_STATS_CHANGE_PERIOD)
             {
                 _lastWifiUpdate = millis();
+                _data.footerWifiConnected = FOOTER_WIFI_CONNECTED::MQTT_STATUS;
+            }
+        }
+        else if (_data.footerWifiConnected == FOOTER_WIFI_CONNECTED::MQTT_STATUS)
+        {
+            sprintf(buffer, "MQTT: %s", _data.mqttStatus == MqttClient::MQTT_STATUS::MQTT_OK ? "CONNECTED" : "DISCONNECTED");
+            if (millis() - _lastWifiUpdate > FOOTER_STATS_CHANGE_PERIOD)
+            {
+                _lastWifiUpdate = millis();
                 _data.footerWifiConnected = FOOTER_WIFI_CONNECTED::SD_STATUS;
             }
         }
@@ -195,13 +204,14 @@ void Display::_updateDisplay()
     _hwDisplay.display();
 }
 
-void Display::update(Logger::SD_STATUS status)
+void Display::update(Logger::SD_STATUS status, MqttClient::MQTT_STATUS mqttStatus)
 {
     if (millis() - _lastUpdate > OLED_UPDATE_PERIOD)
     {
         _lastUpdate = millis();
         _updateDisplay();
         _data.sdStatus = status;
+        _data.mqttStatus = mqttStatus;
     }
 }
 

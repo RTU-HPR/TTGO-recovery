@@ -39,7 +39,7 @@ void setup()
 
 void loop()
 {
-  display.update(logger.status());
+  display.update(logger.status(), mqttClient.status());
   if (radio.receive_bytes())
   {
     incomingPacket.received(radio.received_data.bytes, radio.received_data.length);
