@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>MQTT Settings</title>
+    <style>
+      *,
+      *:before,
+      *:after {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #333;
+        color: #fff;
+      }
+
+      #settings {
+        background-color: #444;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+      }
+
+      h1 {
+        margin: 0 0 20px;
+        font-size: 2em;
+        text-align: center;
+      }
+
+      a {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        margin: 20px 0;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      a:hover {
+        background-color: #45a049;
+      }
+
+      label {
+        font-weight: bold;
+        font-size: 1.1em;
+        margin-top: 10px;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0 20px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        font-size: 1em;
+        color: #fff;
+        background-color: #555;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 12px;
+        margin: 20px 0 0;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+        border-radius: 4px;
+        width: 100%;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      input:disabled {
+        background-color: #777;
+        cursor: not-allowed;
+      }
+
+      @media (max-width: 800px) {
+        #settings {
+          width: 100%;
+          padding: 20px;
+        }
+
+        h1 {
+          font-size: 1.5em;
+        }
+
+        a,
+        button {
+          font-size: 1em;
+        }
+      }
+
+      .id-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+
+      #id {
+        flex: 1;
+      }
+
+      #generate-btn {
+        background-color: #4caf50;
+        color: white;
+        padding: 8px;
+        margin-left: 10px;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+        border-radius: 4px;
+        flex: 1;
+        max-width: 180px;
+      }
+
+      #generate-btn:hover {
+        background-color: #45a049;
+      }
+      #status-indicator {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-left: 10px;
+      }
+      .status-applied {
+        background-color: #28a745; /* Green */
+      }
+      .status-not-applied {
+        background-color: #dc3545; /* Red */
+      }
+    </style>
+    <script>
+      function sendPostRequest(url, value) {
+        // Use the fetch function to send a POST request
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/html charset=UTF-8",
+          },
+          body: value,
+        });
+      }
+      window.onload = function () {
+        var button = document.getElementById("submit-btn");
+        var idField = document.getElementById("id");
+        const statusText = document.getElementById("status-text");
+        const statusIndicator = document.getElementById("status-indicator");
+
+        // Fetch the initial values
+        Promise.all([
+          fetch("/serverDomain")
+            .then((response) => response.text())
+            .then(
+              (value) => (document.getElementById("serverDomain").value = value)
+            ),
+          fetch("/username")
+            .then((response) => response.text())
+            .then(
+              (value) => (document.getElementById("username").value = value)
+            ),
+          fetch("/password")
+            .then((response) => response.text())
+            .then(
+              (value) => (document.getElementById("password").value = value)
+            ),
+          fetch("/topic")
+            .then((response) => response.text())
+            .then((value) => (document.getElementById("topic").value = value)),
+          fetch("/port")
+            .then((response) => response.text())
+            .then((value) => (document.getElementById("port").value = value)),
+          fetch("/id")
+            .then((response) => response.text())
+            .then((value) => (idField.value = value)),
+        ]).catch((error) => console.error("Error:", error));
+
+        // Add an event listener for the click event
+        button.addEventListener("click", function (event) {
+          // Prevent the button from submitting a form
+          event.preventDefault();
+
+          // Send a POST request for each input field
+          Promise.all([
+            sendPostRequest(
+              "/serverDomain",
+              document.getElementById("serverDomain").value
+            ),
+            sendPostRequest(
+              "/username",
+              document.getElementById("username").value
+            ),
+            sendPostRequest(
+              "/password",
+              document.getElementById("password").value
+            ),
+            sendPostRequest("/topic", document.getElementById("topic").value),
+            sendPostRequest("/port", document.getElementById("port").value),
+            sendPostRequest("/id", idField.value),
+          ]);
+
+          const userConfirmed = confirm(
+            "To apply the settings immediately, the system will reboot. On-screen data will be lost. Log on SD card will be preserved. Click OK to apply the settings now, click Cancel to apply the settings on the next boot."
+          );
+          if (userConfirmed) {
+            Promise.all([sendPostRequest("/apply", "apply")]).then(() => {
+              //location.reload();
+            });
+          }
+        });
+
+        // Add an event listener for the generate button click
+        document
+          .getElementById("generate-btn")
+          .addEventListener("click", function () {
+            fetch("/generateid", {
+              method: "POST",
+              body: "generateid",
+            })
+              .then((response) => response.text())
+              .then((value) => {
+                document.getElementById("id").value = value;
+              })
+              .catch((error) => console.error("Error:", error));
+          });
+
+        // Function to check the status of settings
+        function checkSettingsStatus() {
+          fetch("/settingsStatus")
+            .then((response) => response.json())
+            .then((data) => {
+              if (data == "1") {
+                statusText.textContent = "Settings Applied.";
+                statusIndicator.className = "status-applied";
+              } else {
+                statusText.textContent =
+                  "Settings Not Applied. Reboot Required.";
+                statusIndicator.className = "status-not-applied";
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              statusText.textContent = "Settings Not Applied. Reboot Required.";
+              statusIndicator.className = "status-not-applied";
+            });
+        }
+
+        // Update the status indicator every 2.5 seconds
+        setInterval(checkSettingsStatus, 2500);
+      };
+    </script>
+  </head>
+
+  <body>
+    <div id="settings">
+      <h1>MQTT Settings</h1>
+      <a href="/radio.html">Radio Settings</a>
+      <label for="serverDomain">Server Domain:</label>
+      <input type="text" id="serverDomain" name="serverDomain" />
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" />
+      <label for="password">Password:</label>
+      <input type="text" id="password" name="password" />
+      <label for="port">Port:</label>
+      <input type="number" id="port" name="port" min="1" max="65535" />
+      <label for="topic">Topic:</label>
+      <input type="text" id="topic" name="topic" />
+      <label for="id">ID:</label>
+      <div class="id-container">
+        <input type="text" id="id" name="id" />
+        <button id="generate-btn" type="button">Generate</button>
+      </div>
+      <div>
+        <label>Status:</label>
+        <span id="status-text">Fetching. Please wait.</span>
+        <div id="status-indicator" class="status-not-applied"></div>
+      </div>
+      <button id="submit-btn">Apply Settings</button>
+    </div>
+  </body>
+</html>

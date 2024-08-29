@@ -11,12 +11,12 @@ MqttClient::MqttClient(const char *server, uint16_t port, const char *user, cons
 
     if (strcmp(_id, MQTT_ID_DEFAULT) == 0)
     {
-        randomSeed(analogRead(0));
-        uint16_t id = random(10000, UINT16_MAX);
-        sprintf(_id, TTGO_ID_FORMAT, id);
+        char buffer[64];
+        generateId(buffer);
+        strcpy(_id, buffer);
     }
 
-    _lastReconnect = millis();
+    _lastReconnectLoop = millis();
 }
 
 MqttClient::MqttClient() : _port(MQTT_PORT), _client(_wifiClient)
@@ -29,12 +29,12 @@ MqttClient::MqttClient() : _port(MQTT_PORT), _client(_wifiClient)
 
     if (strcmp(_id, MQTT_ID_DEFAULT) == 0)
     {
-        randomSeed(analogRead(0));
-        uint16_t id = random(10000, UINT16_MAX);
-        sprintf(_id, TTGO_ID_FORMAT, id);
+        char buffer[64];
+        generateId(buffer);
+        strcpy(_id, buffer);
     }
 
-    _lastReconnect = millis();
+    _lastReconnectLoop = millis();
 }
 
 MqttClient::~MqttClient()
@@ -49,11 +49,42 @@ MqttClient::MQTT_STATUS MqttClient::begin()
     return _connect();
 }
 
+MqttClient::MQTT_STATUS MqttClient::begin(MqttSettings settings)
+{
+    strcpy(_server, settings.server);
+    _port = settings.port;
+    strcpy(_user, settings.user);
+    strcpy(_pass, settings.pass);
+    strcpy(_id, settings.id);
+    strcpy(_topic, settings.topic);
+
+    _wifiClient.setCACert(MQTT_ROOT_CERTIFICATE);
+    _client.setClient(_wifiClient);
+    _client.setServer(_server, _port);
+    return _connect();
+}
+
+MqttClient::MQTT_STATUS MqttClient::generateId(char *id)
+{
+    randomSeed(analogRead(0));
+    uint16_t numId = random(10000, UINT16_MAX);
+    sprintf(id, TTGO_ID_FORMAT, numId);
+    return MqttClient::MQTT_OK;
+}
+
 MqttClient::MQTT_STATUS MqttClient::_connect()
 {
+    while (millis() - _lastConnectionAttempt < MQTT_CONNECT_ATTMEPT_PERIOD)
+        ;
+    _lastConnectionAttempt = millis();
+
     if (_verifySettings() != MQTT_OK)
     {
         return MQTT_DEFAULT_CREDS;
+    }
+    if (_connected() == MQTT_OK)
+    {
+        _client.disconnect();
     }
     _client.setServer(_server, _port);
     if (!_client.connect(_id, _user, _pass))
@@ -83,16 +114,16 @@ MqttClient::MQTT_STATUS MqttClient::_verifySettings()
 
 MqttClient::MQTT_STATUS MqttClient::loop()
 {
+    _client.loop();
     if (_connected() != MQTT_OK)
     {
-        if (millis() - _lastReconnect > MQTT_RECONNECT_PERIOD)
+        if (millis() - _lastReconnectLoop > MQTT_RECONNECT_LOOP_PERIOD)
         {
-            _lastReconnect = millis();
+            _lastReconnectLoop = millis();
             return _connect();
         }
         return MQTT_ERROR;
     }
-    _client.loop();
     return MQTT_OK;
 }
 
@@ -122,7 +153,7 @@ MqttClient::MQTT_STATUS MqttClient::publish(const char *payload, const char *top
     return MQTT_OK;
 }
 
-MqttClient::MQTT_STATUS MqttClient::_configure()
+MqttClient::MQTT_STATUS MqttClient::_configure(bool reconnect)
 {
     if (_connected() == MQTT_OK)
     {
@@ -133,36 +164,60 @@ MqttClient::MQTT_STATUS MqttClient::_configure()
 
 MqttClient::MQTT_STATUS MqttClient::setServer(const char *server)
 {
+    if (strcmp(server, _server) == 0)
+    {
+        return MQTT_OK;
+    }
     strcpy(_server, server);
     return _configure();
 }
 
 MqttClient::MQTT_STATUS MqttClient::setPort(uint16_t port)
 {
+    if (_port == port)
+    {
+        return MQTT_OK;
+    }
     _port = port;
     return _configure();
 }
 
 MqttClient::MQTT_STATUS MqttClient::setUser(const char *user)
 {
+    if (strcmp(user, _user) == 0)
+    {
+        return MQTT_OK;
+    }
     strcpy(_user, user);
     return _configure();
 }
 
 MqttClient::MQTT_STATUS MqttClient::setPass(const char *pass)
 {
+    if (strcmp(pass, _pass) == 0)
+    {
+        return MQTT_OK;
+    }
     strcpy(_pass, pass);
     return _configure();
 }
 
 MqttClient::MQTT_STATUS MqttClient::setId(const char *id)
 {
+    if (strcmp(_id, id) == 0)
+    {
+        return MQTT_OK;
+    }
     strcpy(_id, id);
     return _configure();
 }
 
 MqttClient::MQTT_STATUS MqttClient::setTopic(const char *topic)
 {
+    if (strcmp(_topic, topic) == 0)
+    {
+        return MQTT_OK;
+    }
     strcpy(_topic, topic);
     return _configure();
 }
@@ -198,8 +253,8 @@ void MqttClient::getTopic(char *topic)
 }
 
 MqttClient::MQTT_STATUS MqttClient::status()
-{   
-    if(_verifySettings() != MQTT_OK)
+{
+    if (_verifySettings() != MQTT_OK)
     {
         return MQTT_DEFAULT_CREDS;
     }

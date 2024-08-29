@@ -4,7 +4,8 @@ def get_cert(file_path):
     os.system(f"curl -o {file_path} https://letsencrypt.org/certs/isrgrootx1.pem")
 
 def del_file(file_path):
-    os.remove(file_path)
+    if os.path.exists(file_path):
+        os.remove(file_path)
 
 def convert_cert(file_path, output_file):
     # Delete the output file if it exists

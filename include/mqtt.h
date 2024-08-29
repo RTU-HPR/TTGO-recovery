@@ -34,7 +34,7 @@
 
 #define TTGO_ID_FORMAT "TTGO-RECOVERY-%ld"
 
-#define MQTT_RECONNECT_PERIOD 5000
+#define MQTT_CONNECT_ATTMEPT_PERIOD 100
 
 class MqttClient
 {
@@ -44,6 +44,16 @@ public:
         MQTT_OK,
         MQTT_ERROR,
         MQTT_DEFAULT_CREDS
+    };
+
+    struct MqttSettings
+    {
+        char server[128];
+        uint16_t port;
+        char user[128];
+        char pass[128];
+        char id[128];
+        char topic[128];
     };
 
 private:
@@ -57,23 +67,26 @@ private:
     char _pass[128];
     char _id[128];
     char _topic[128];
-    uint64_t _lastReconnect;
+    uint64_t _lastReconnectLoop;
+    uint64_t _lastConnectionAttempt;
 
     MQTT_STATUS _connect();
     MQTT_STATUS _connected();
     MQTT_STATUS _verifySettings();
-    MQTT_STATUS _configure();
+    MQTT_STATUS _configure(bool reconnect = false);
 
 public:
     MqttClient(const char *server, uint16_t port, const char *user, const char *pass, const char *id, const char *topic);
     MqttClient();
     ~MqttClient();
 
+    MQTT_STATUS begin(MqttSettings settings);
     MQTT_STATUS begin();
     MQTT_STATUS loop();
     MQTT_STATUS publish(const char *payload);
     MQTT_STATUS publish(const char *payload, const char *topic);
     MQTT_STATUS status();
+    MQTT_STATUS generateId(char *id);
 
     MQTT_STATUS setServer(const char *server);
     MQTT_STATUS setPort(uint16_t port);

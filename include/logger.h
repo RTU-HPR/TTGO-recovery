@@ -43,7 +43,7 @@ private:
 
     bool _isLogFile(char *name);
 
-    SD_STATUS _mounted; /// THIS VARIABLE IS ONLY UPDATED IN LOOP FUNCTION.
+    SD_STATUS _mounted = SD_ERROR; /// THIS VARIABLE IS ONLY UPDATED IN LOOP FUNCTION.
                         /// IT MAY NOT REPRESENT THE UP-TO DATE STATUS.
 
 public:

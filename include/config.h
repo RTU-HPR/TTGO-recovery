@@ -1,7 +1,7 @@
 #pragma once
 
 // ======================== Firmware Version ========================
-#define VERSION "0.1pre"               ///< Firmware version
+#define VERSION "0.1"               ///< Firmware version
 #define COMPILE_DATE __DATE__ __TIME__ ///< Compilation date
 
 // ======================== General Configuration ========================
@@ -13,8 +13,8 @@
 
 // ======================== Display Configuration ========================
 #define OLED_UPDATE_FREQ 15             ///< OLED update frequency in Hz
-#define RTU_HPR_SPLASH_TIMEOUT 0        ///< Enable HPR splash screen timeout in ms
-#define FOOTER_STATS_CHANGE_PERIOD 2000 ///< WiFi stats update period in ms
+#define RTU_HPR_SPLASH_TIMEOUT 2000        ///< Enable HPR splash screen timeout in ms
+#define FOOTER_STATS_CHANGE_PERIOD 3000 ///< Screen footer (row with additional info) update period in ms
 
 // ======================== WiFi Configuration ========================
 #define WIFI_HOSTNAME (char *)"RTU_HPR_RECOVERY" ///< WiFi hostname
@@ -26,11 +26,6 @@
 #define LOGGER_REMOUNT_PERIOD 30000 ///< SD card remount period in ms
 
 // ======================== MQTT Configuration ========================
-// #define MQTT_SERVER                                                  ///< MQTT server address
-// #define MQTT_PORT                                                    ///< MQTT server port
-// #define MQTT_USER                                                    ///< MQTT username
-// #define MQTT_PASS                                                    ///< MQTT password
-// #define MQTT_ID                                                      ///< MQTT client ID ("random" for random ID)
-// #define MQTT_TOPIC                                                   ///< MQTT topic
+#define MQTT_RECONNECT_LOOP_PERIOD 5000 ///< MQTT server reconnect loop period in ms
 
 #include "TTGOPins.h"

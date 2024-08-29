@@ -10,7 +10,6 @@
 
 const String LOCATION_FORMAT[] = {"float", "float", "uint16", "uint16", "uint8"};
 #define LOCATION_PACKET_DATA_COUNT 5
-#define HELLO_radio
 
 class RadioPacket
 {

@@ -1,12 +1,12 @@
 #include "main.h"
 
 Radio radio;
-Config config(&radio, &SPI);
+MqttClient mqtt;
+Config config(&radio, &mqtt, &SPI);
 Display display;
 SPIClass SPI2(HSPI);
 Logger logger(SPI2);
 RadioPacket incomingPacket(&logger);
-MqttClient mqttClient;
 
 void setup()
 {
@@ -29,22 +29,25 @@ void setup()
   SPI.begin(TTGO_LORA_SCLK, TTGO_LORA_MISO, TTGO_LORA_MOSI);
   radio.begin(config.radioConfig());
 
-  display.begin();
-
+  ///< Initialize the SD card logger
   SPI2.begin(TTGO_SDCARD_SCLK, TTGO_SDCARD_MISO, TTGO_SDCARD_MOSI, TTGO_SDCARD_CS);
   logger.begin();
 
-  mqttClient.begin();
+  ///< Initialize the MQTT client
+  mqtt.begin(config.mqttSettings());
+
+  ///< Initialize the display
+  display.begin();
 }
 
 void loop()
 {
-  display.update(logger.status(), mqttClient.status());
+  display.update(logger.status(), mqtt.status());
   if (radio.receive_bytes())
   {
     incomingPacket.received(radio.received_data.bytes, radio.received_data.length);
     display.update(incomingPacket.lastPacket());
   }
   logger.loop();
-  mqttClient.loop();
+  mqtt.loop();
 }

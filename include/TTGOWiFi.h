@@ -8,4 +8,5 @@
 
 #include "config.h"
 #include "systemConfig.h"
-#include "webpage.h"
+#include "webpages/radio_webpage.h"
+#include "webpages/mqtt_webpage.h"
