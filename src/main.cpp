@@ -6,7 +6,7 @@ Config config(&radio, &mqtt, &SPI);
 Display display;
 SPIClass SPI2(HSPI);
 Logger logger(SPI2);
-RadioPacket incomingPacket(&logger);
+RadioPacket incomingPacket(&logger, &mqtt);
 
 void setup()
 {
@@ -47,6 +47,7 @@ void loop()
   {
     incomingPacket.received(radio.received_data.bytes, radio.received_data.length);
     display.update(incomingPacket.lastPacket());
+    
   }
   logger.loop();
   mqtt.loop();

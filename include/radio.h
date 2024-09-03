@@ -5,6 +5,7 @@
 #include "config.h"
 #include "teamLogo.h"
 #include "logger.h"
+#include "mqtt.h"
 #include "MUFFINS_CCSDS_Packets.h"
 #include "MUFFINS_Checksums.h"
 
@@ -36,11 +37,12 @@ private:
     /* data */
     TelemetryData _lastPacket;
     Logger *_logger;
+    MqttClient *_mqtt;
 
     Logger::LOG_STATUS _log(TelemetryData *data);
-
+    MqttClient::MQTT_STATUS _publish(TelemetryData *data);
 public:
-    RadioPacket(Logger *logger);
+    RadioPacket(Logger *logger, MqttClient *mqtt);
     ~RadioPacket();
 
     PacketStatus received(uint8_t *data, uint8_t len);
